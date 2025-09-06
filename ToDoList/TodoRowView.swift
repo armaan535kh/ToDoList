@@ -8,11 +8,33 @@
 import SwiftUI
 
 struct TodoRowView: View {
+    
+    let todo: TodoItem
+    let viewModel: TodoViewModel
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            Text(todo.title)
+                .strikethrough(todo.isCompleted)
+                .foregroundStyle(todo.isCompleted ? .gray : .primary)
+            
+            Spacer()
+            
+            Button( action: {viewModel.toggleCompletion(for: todo)}) {
+                Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(todo.isCompleted ? .green : .gray)
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.toggleCompletion(for: todo)
+        }
     }
 }
 
 #Preview {
-    TodoRowView()
+    TodoRowView(
+        todo: TodoItem(title: "Sample Todo", isCompleted: false),
+                viewModel: TodoViewModel()
+    )
 }
