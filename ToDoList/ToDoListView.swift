@@ -24,8 +24,13 @@ struct ToDoListView: View {
             .navigationTitle("Todo List")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Add") {
-                        showingAddTask = true
+                    NavigationLink(destination: AddItemPage(newTaskTitle: $newTaskTitle) {
+                        if !newTaskTitle.isEmpty {
+                            viewModel.addTodo(title: newTaskTitle)
+                            newTaskTitle = ""
+                        }
+                    }) {
+                        Text("Add")
                     }
                 }
             }
@@ -47,4 +52,26 @@ struct ToDoListView: View {
 
 #Preview {
     ToDoListView()
+}
+
+struct AddItemPage: View {
+    @Binding var newTaskTitle: String
+    let addAction: () -> Void
+
+    var body: some View {
+        VStack {
+            TextField("Enter task title", text: $newTaskTitle)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+
+            Button("Add") {
+                addAction()
+            }
+            .buttonStyle(.borderedProminent)
+
+            Spacer()
+        }
+        .padding()
+        .navigationTitle("Add New Task")
+    }
 }
